@@ -1,0 +1,6 @@
+\select@language {croatian}
+\contentsline {section}{\numberline {1}Uvod}{1}{section.1}
+\contentsline {section}{\numberline {2}Istovjetnost stanja}{3}{section.2}
+\contentsline {section}{\numberline {3}Odre\IeC {\dj }ivanje istovjetnih stanja}{4}{section.3}
+\contentsline {section}{\numberline {4}Nedohvatljiva stanja}{7}{section.4}
+\contentsline {section}{\numberline {5}DKA s minimalnim brojem stanja}{8}{section.5}

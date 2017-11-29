@@ -1,0 +1,539 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Zadaca 2html</title>
+    <script src="https://sagecell.sagemath.org/static/jquery.min.js"></script>
+    <script src="https://sagecell.sagemath.org/static/embedded_sagecell.js"></script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          processEscapes: true
+        }
+      });
+    </script>
+
+    <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+    <script>$(function () {
+    // Make the div with id 'mycell' a Sage cell
+    sagecell.makeSagecell({inputLocation:  '#mycell',
+                           template:       sagecell.templates.minimal,
+                           evalButtonText: 'Activate'});
+    // Make *any* div with class 'compute' a Sage cell
+    sagecell.makeSagecell({inputLocation: 'div.compute',
+                           evalButtonText: 'Izračunaj'});
+    });
+    </script>
+	
+	        <style type="text/css">
+          @import url(https://fonts.googleapis.com/css?family=Libre+Baskerville:400,700,400italic&subset=latin,latin-ext);
+          @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz&subset=latin,latin-ext);
+          @import url(https://fonts.googleapis.com/css?family=Roboto);
+			
+            body {
+                background-color: #E0F8EC;
+                background-attachment: fixed;
+                
+                background-position: right top;
+                background-repeat: no-repeat;
+                
+                font-family: sans-serif;
+                margin-left: 20px;
+                margin-right: 20px;
+            }
+            
+            h1
+            {                
+                margin: 1em 0 0.5em 0;
+                font-weight: 600;
+                font-family: 'Titillium Web', sans-serif;
+                position: relative;  
+                font-size: 36px;
+                line-height: 40px;
+                padding: 15px 15px 15px 15%;
+                color: #4B0082;
+                box-shadow: 
+                    inset 0 0 0 1px rgba(53,86,129, 0.4), 
+                    inset 0 0 5px rgba(53,86,129, 0.5),
+                    inset 0px 0 35px rgba(53,86,129, 0.5);
+                border-radius: 0 10px 0 10px;
+                opacity: 0.5;
+                filter:alpha(opacity=100);
+            }
+            
+            h2
+            {
+                margin: 1em 0 0.5em 0;
+                font-weight: 400;
+                font-family: 'Titillium Web', sans-serif;
+                position: relative;
+                text-shadow: 0 0px 1px rgba(0,0,0,0.4);
+                font-size: 22px;
+                line-height: 45px;
+                color: #4B0082;
+                text-transform: uppercase;
+                
+            }
+            
+            h2:after 
+            {
+                display: block;
+                content: " ";
+                border-bottom: 1px solid;
+                flex: 1 1 auto;
+                width: 100%;
+            }
+            
+            .definicija
+            {
+                max-width: 100%;
+                margin: 1em 0 0.5em 0;
+                font-weight: normal;
+                position: relative;
+                font-size: 1em;
+                background: #D8BFD8;
+                border: 1px solid #fff;
+                padding: 5px 15px;
+                color: #3F3F3F;
+                border-radius: 0 10px 0 10px;
+                box-shadow: inset 0 0 5px rgba(53,86,129, 0.5);
+                font-family: 'Muli', sans-serif;
+            }
+			 .teorem
+            {
+                max-width: 100%;
+                margin: 1em 0 0.5em 0;
+                font-weight: normal;
+                position: relative;
+                font-size: 1em;
+                background: #355681;
+                border: 1px solid #fff;
+                padding: 5px 15px;
+                color: white;
+                border-radius: 0 10px 0 10px;
+                font-family: 'Muli', sans-serif;
+            }
+			.dokaz
+            {
+                max-width: 11%;
+                margin: 1em 0 0.5em 0;
+                font-weight: normal;
+                position: relative;
+                font-size: 1em;
+                background: #ffdae0;
+                border: 1px solid #fff;
+                padding: 5px 15px;
+                color: grey;
+                border-radius: 0 10px 0 10px;
+                font-family: 'Muli', sans-serif;
+            }
+           
+        </style>
+  </head>
+  <body>
+    <h1>Aproksimacijski algoritmi i optimizacija</h1>
+	Za neke probleme, ponekad nas ne zanima najbolje ili optimalno rješenje, nego nam je dovoljno dobro ono približno optimalno rješenje, koje nam je često puno lakše i brže za odrediti. Za pronalaženje takvih rješenja problema koristimo aproksimativne algoritme.
+ Definirati ćemo pojma optimizacije, aproksimacijske algoritme te opisate probleme SAT, problem trgovačkog putnika, problem ruksaka i slično.
+
+	     <p>
+         <div class="definicija">
+             <strong>Definicija 1. Optimizacijski problem </strong>je problem pronalaženja najboljeg rješenja od svih rješenja.  
+        </div>
+      
+        <p>
+        <div class="definicija">
+            <strong>Definicija 2. </strong> S $\rho \in (0,1)$ označavamo <strong>faktor aproksimacije</strong>. Algoritam koji u polinomnom
+		vremenu pronalazi rješenje s bilo koje instance $I$ optimizacijskog problema $\Pi$ za koje vrijedi:
+			\begin{align}
+					OPT &\geq cost(I, s) \geq \rho \cdot OPT (kod maksimizacije) \\
+					OPT & \leq cost(I, s) \leq \frac{1}{\rho} \cdot OPT (kod minimizacije)
+			\end{align}
+        </div>
+	
+    <p>
+	<div class = "definicija"> <strong>Definicija 3.</strong> Za funkciju $ f \colon X\subseteq \mathbb{R}^n \to \mathbb{R} $ kažemo da <strong>ima minimum u točki</strong> $x_0 \in X $ ako
+       vrijedi $ f (x_0) \leq f(x) $ za sve $x \in X$ . Točku $x_0$ tada zovemo točkom minimuma , a vrijednost $f(x_0)$ minimum
+       funkcije $f$ na skupu $X$.
+       Problem optimizacije za pronalaženje točke minimuma: 
+	   $\colon$ Zadane su funkcije $f, g_1,\ldots, g_m \colon \mathbb{R}^n \to \mathbb{R}$.
+       Treba pronaći točke minimuma funkcije $f$ na skupu
+
+       $$X=\{x \in \mathbb{R}^n \mid g_i(x) \leq 0 , i=1,\ldots,m\}$$
+
+        $$
+        \begin{align}
+            f(x) &\to \min \\\\
+            g_i(x) &\leq 0 , i = 1, \ldots, m
+        \end{align}
+        $$
+		</div>
+      </p>
+	  Problem minimizacije sada pretvaramo u jedan od najpoznatijih problema optimizacije, a to je <a href="https://en.wikipedia.org/wiki/Knapsack_problem"> <strong>Problem ruksaka </strong></a>.
+      <h2>Problem Ruksaka </h2>
+      <p>Neka je $S$ ruksak veličine $V$, te $m_1, \ldots, m_n$ $n$ predmeta veličina redom $w_1,\ldots, w_n$ koje želimo spakirati. 
+	   Treba naći broj načina pakiranja ruksaka $B$ i $B$-particije $S_1 \cup \cdots \cup S_B$ od skupa
+          $\{1,\ldots,n\}$ tako da $\sum_{i \in S_k} m_i \leq V$ za sve $k=1,\ldots,B$. Za rješenje kažemo da je optimalno ako je $B$ minimalna.
+          Prikaz kao linearno programiranje:
+          \begin{align*}
+            &B = \sum_{i=1}^n y_i \rightarrow \min \\
+            &\sum_{j=1}^n m_j x_{ij} \leq V y_i,	 \forall i\in \{1,\ldots ,n\} \\
+            &\sum _{i=1}^{n}x_{ij} = 1,	 \forall j\in \{1,\ldots ,n\}, y_i \in \{0,1\}, \forall i\in \{1,\ldots ,n\}  x_{ij} \in \{0,1\}, \forall i \in \{1,\ldots,n\}, \forall j \in \{1,\ldots,n\}
+            \end{align*}
+            gdje je  $y_i = 1$ ako je ruksak $i$ korišten, a $x_{ij} = 1$ ako je predmet $j$ u rusaku $i$.
+        </p>
+
+    <div class="compute"><script type="text/x-sage">
+from sage.numerical.optimize import binpacking
+@interact
+def bin_pack(k_int=slider(1,5,1,3,"n")):
+  values = [1/5, 1/3, 2/3, 3/4, 5/7]
+  bins = binpacking(values,k=k_int)
+  print bins
+</script></div>
+
+<h2> Primjeri traženja minimuma funkcije</h2>
+<div class="compute"><script type="text/x-sage">
+f = lambda x: x * sin(x)
+print find_local_maximum(f,-4,4)
+plot(f,(x,-4, 4), rgbcolor=(0.7,0.1,0.55),fillcolor='pink',fill=True)
+</script></div>
+
+<div class="compute"><script type="text/x-sage">
+R.<x> = QQ[]
+f = (x+20)*(x+3)*(x-7/8)^3
+find_root(f, 0,5)
+</script></div>
+
+
+<div class="compute"><script type="text/x-sage">
+vars=var('x y z')
+
+@interact
+def min_fun(a = (1,100), b =(1,50)):
+  f = a*( y + x^3 )^2+(1+x)^2+a*(z-y^2)^2+(7+y)^2 + b
+  print minimize(f,[.1,.3,.4],disp=0)
+
+</script></div>
+
+<div class="compute"><script type="text/x-sage">
+vars=var('x y z')
+
+@interact
+def min_fun(a = (1,100), b =(1,50), c =(1,25)):
+  f = a*x^2 + b*x + c + y*z + b*y^2
+  print minimize(f,[.1,.3,.4], disp = 0 )
+
+</script></div>
+
+Problem ruksaka može se rješiti na dva načina: linearnim programiranjem,(<strong>veća složenost!</strong>) i dinamičkim programiranje. Recimo prvo nešto o pristupu linearnog programiranja. 
+
+<h2><a href = "https://en.wikipedia.org/wiki/Linear_programming">Linearno programiranje </a></h2>
+<p>
+<div class = "definicija"><strong> Definicija 4. Linearno programiranje </strong> ili linearna opimizacija je metoda kojom se određuje optimalna
+vrijednost linearne funkcije više varijabli (tzv. funkcije cilja) obzirom na neke zadane
+ linearne uvjete koje varijable moraju zadovoljavati.</div> Problem linearnog programiranja zapisujemo:
+$$
+\begin{align}
+ z^\tau x &\to \max \ 
+\end{align}
+\ gdje\ je\ 
+z \ = \
+\begin{bmatrix}
+z_1 \\
+\vdots\\
+z_n
+\end{bmatrix}
+\in \mathbb{R}^n ,
+
+$$
+$$
+ Ax \leq b \ , x \geq 0 \ ,
+A=
+\begin{bmatrix}
+a_{11} \ldots a_{1n} \\
+\vdots \ddots \vdots \\
+a_{m1} \ldots a_{mn}
+\end{bmatrix}
+\in \mathbb{R}^{m \times n} ,
+b=
+\begin{bmatrix}
+b_1 \\
+\vdots\\
+b_m
+\end{bmatrix}
+\in \mathbb{R}^m
+$$
+</p>
+<h2>Primjer linearnog programiranja</h2>
+
+<div class="compute"><script type="text/x-sage">
+c=vector(RDF,[-4,-5])
+G=matrix(RDF,[[2,1],[1,2],[-1,0],[0,-1]])
+h=vector(RDF,[3,3,0,0])
+sol=linear_program(c,G,h)
+sol['x']
+</script></div>
+
+<h2>Cjelobrojno programiranje </h2>
+<p>Cjelobrojno programiranje je oblik linearnog programiranja kod kojeg se varijable
+   odlučivanja definiraju (ograničavaju) kao cjelobrojne varijable.
+   Standardni problem cjelobrojnog programiranja ima slijedeći oblik
+    \begin{align}
+    \sum_{j=1}^n c_j x_j & \rightarrow \max  \\
+    \sum_{j=1}^n a_{ij} x_j & \leq  b_i \text{ ,za } i = 1, \ldots , m \\
+    x_j & \geq 0  \text{ ,za } j = 1, \ldots , n  \\
+    \label{uvjet_cjelo:1} x_1 , x_2, \ldots , x_n & \in \mathbb{Z}
+    \end{align}
+    Gdje je $\sum_{j=1}^n c_j x_j \rightarrow \max$ funkcija cilja, a ostalo su uvjeti problema.
+    Zadnji uvjet se još naziva uvjet cjelobrojnosti, bez njega bismo imali problem linearnog programiranja. <br/>
+    Postoji nekoliko vrsta cjelobrojnog programiranja :<br/>
+	<ol>
+		<li>Čisto cjelobrojno programiranje </li>
+		<li> Mješovito cjelobrojno programiranje</li>
+		<li>Binarno programiranje </li>
+	</ol>	
+</p>
+<h2>Primjeri mješovitog cjelobrojnog programiranja</h2>
+<div class="compute"><script type="text/x-sage">
+g = graphs.PetersenGraph()
+p = MixedIntegerLinearProgram()
+matching = p.new_variable(binary=True)
+p.set_objective(sum(matching[e] for e in g.edges(labels=False)))
+for v in g:
+  p.add_constraint(sum(matching[e]
+    for e in g.edges_incident(v, labels=False)) <= 1)
+p.solve()
+matching = p.get_values(matching)
+[e for e,b in matching.iteritems() if b == 1]
+</script></div>
+
+
+<div class="compute"><script type="text/x-sage">
+g = graphs.ChvatalGraph()
+g = g.minimum_outdegree_orientation()
+p = MixedIntegerLinearProgram()
+f = p.new_variable(real=True, nonnegative=True)
+s, t = 0, 2
+for v in g:
+  if v != s and v != t:
+    p.add_constraint(
+      sum(f[(v,u)] for u in g.neighbors_out(v))
+      - sum(f[(u,v)] for u in g.neighbors_in(v)) == 0)
+for e in g.edges(labels=False):
+  p.add_constraint(f[e] <= 1)
+
+p.set_objective(sum(f[(s,u)] for u in g.neighbors_out(s)))
+plt = g.plot()
+plt.show()
+p.solve()
+</script></div>
+
+<div class="compute"><script type="text/x-sage">
+p = MixedIntegerLinearProgram(maximization=False, solver = "GLPK")
+w = p.new_variable(integer=True, nonnegative=True)
+p.add_constraint(w[0] + w[1] + w[2] - 14*w[3] == 0)
+p.add_constraint(w[1] + 2*w[2] - 8*w[3] == 0)
+p.add_constraint(2*w[2] - 3*w[3] == 0)
+p.add_constraint(w[0] - w[1] - w[2] >= 0)
+p.add_constraint(w[3] >= 1)
+_ = [ p.set_min(w[i], None) for i in range(1,4) ]
+p.set_objective(w[3])
+p.show()
+print 'rijesenje: ' , p.solve()
+for i, v in p.get_values(w).iteritems():
+  print 'w_%s = %s' % (i, int(round(v)))
+</script></div>
+
+<p>
+	<div class = "definicija"><strong> Definicija 5. </strong>Svako preslikavanje sa skupa propozicionalnih varijabli skupu $\{0, 1\}$ tj. $I:\{P_0,P_1,...\} \rightarrow \{0,1\}$ nazivamo <b>interpretacija</b>. Istinitost inteprepretacije definira se rekurzivno po složenosti formule. 
+	</div>
+	</p>
+	Istinitost za formulu možete provjeriti s: 
+	<div class="compute"><script type="text/x-sage">
+F_neg = propcalc.formula("~A")
+F_or = propcalc.formula("A|B")
+F_and = propcalc.formula("A&B")
+F_ifthen = propcalc.formula("A->B")
+F_iff = propcalc.formula("A<->B")
+
+def I(formula, A_true, B_true):
+	if formula.evaluate({'A': A_true, 'B': B_true}):
+		return 1
+	else:
+		return 0
+
+@interact
+def _(A=['True','False'],B=['True','False']):
+	A_true = A == 'True'
+	B_true = B == 'True'
+	html("$I(\\neg A) = $ " + str(I(F_neg, A_true, B_true)))
+	html("$I(A \\wedge B) = $ " + str(I(F_and, A_true, B_true)))
+	html("$I(A \\vee B) = $ " + str(I(F_or, A_true, B_true)))
+	html("$I(A \\rightarrow B) = $ " + str(I(F_ifthen, A_true, B_true)))
+	html("$I(A \\leftrightarrow B) = $ " + str(I(F_iff, A_true, B_true)))
+</script></div>
+
+	<p>
+	<div class = "definicija"><strong> Definicija 6. </strong>	Za formulu F kažemo da je <b>ispunjiva</b> ako postoji intepretacija $I$ tako da vrijedi $I(F)=1$, odnosno $I(F)=0$. 
+	</div>
+	</p>
+	<p>
+	<div class = "definicija"><strong> Definicija 7. </strong>Za formulu F kažemo da je valjana ili <b>tauotologija</b>, ako je istinita za svaku interpretaciju, dok formulu G koja je neistinita za svaku interpretaciju zovemo <strong>antitauotologija</strong>.
+	</div>
+	</p>
+	Promotrimo navedena svojstva formula na sljedećem primjeru:
+	<div class="compute"><script type="text/x-sage">
+
+@interact
+def _(F=('$F$','a->~a')):
+	f = propcalc.formula(F)
+	print "Ispunjiva? " + str(f.is_satisfiable())
+	print "Oboriva? " + str(not f.is_tautology)
+	print "Tauotologija? " + str(f.is_tautology())
+	print "Antitauotologija? " + str(f.is_contradiction())
+</script></div>
+	<p>
+	<div class = "definicija"><strong> Definicija 8. </strong>
+		<strong>Literal</strong> je svaka atomarna formula i njena negacija. 
+	</div></p>
+	<p>
+	<div class = "definicija"><strong> Definicija 9. </strong>Formulu oblika $F \equiv A_1 \wedge A_2 \wedge \,...\, \wedge A_s$ nazivamo <strong>elementarnom konjunkcijom</strong>, a formulu oblika $F \equiv A_1 \vee A_2 \vee \,...\, \vee A_s$ <strong>elementarnom disjunkcijom. </strong>
+	</div>
+	</p>
+	<p>
+	<div class = "definicija"><strong> Definicija 10. Konjunktivna normalna forma</strong> (KNF) je konjunkcija elementarnih disjunkcija, a <strong>disjunktivna normalna forma</strong> (DNF) je disjunkcija elementarnih konjunkcija.
+	</div> 
+	<div class = "definicija"><strong> Definicija 11.</strong>  Konjunktivnu normalnu forma koja u svakoj elementarnoj disjunkciji ima točno $K$ literala, nazivamo <strong>K-KNF</strong>.
+	</div> 
+	</p>
+	<p>
+	<div class = "definicija"><strong> Definicija 12. </strong>Za formule F i G kažemo da su <strong> ekvivalentne </strong> ako je vrijednost za svaku interpretaciju $I$ nad njima jednaka, tj. $\forall I, \ I(F) = I(G)$.
+	</div>
+	</p>
+	<p> <div class = "teorem"><strong> Teorem o ekvivalenciji normalnih formi.</strong> Za svaku formulu logike sudova postoji konjunktivna i disjunktivna normalna forma. </div></p> 
+	 <br /> <br />
+
+	<h2><a href= "https://en.wikipedia.org/wiki/Boolean_satisfiability_problem">Problem SAT</a></h2>
+	<p>
+	<div class = "definicija"><strong> Definicija 13. Problem SAT</strong> (eng. satisfiabbility) $ := \{ F\ :\ F\ je\ ispunjiva\ KNF \}$ </div> 
+	<div class = "definicija"><strong> Definicija 14. Problem 3-SAT</strong> (eng. satisfiabbility) $ := \{ F\ :\ F\ je\ ispunjiva\ 3-KNF \}$ </div> 
+	</p>
+	<p>
+		Jedan od načina rješavanja je pomoću tablica istinitosti tj. za skup propizionalnih varijabli definiramo tablicu u kojoj razmatramo sve moguće interpretacije nad varijablama formule $F$. Svaki redak predstavlja primjerak jedne interpretacije.
+	</p>
+	<div class = "compute"><script type = "text/x-sage">
+@interact
+def _(F=('$F$','(~p1|~p1|p2)&(~p2|p1|~p4)&(p2|~p2|p3)')):
+	f1 = propcalc.formula(F)
+	print f1.truthtable()
+	</script></div>
+
+	<p>
+	Rješavanja ovog problema na ovaj način nije efikasno. Iz gornje tablice jasno vidimo da za formulu koja ima $n = 4$ varijable postoji ukupno $16\ (= 4^2)$ redaka tj. različitih interpretacija. <br />
+	Algoritam koji provjerava sve moguće interpretacije za danu formulu tako ima eksponencijalnu složenost. 
+	</p>
+	Zašto to predstalja problem, možemo uočiti na sljedećem grafu usporedbi: 
+
+	<div class="compute"><script type="text/x-sage">
+p1 = plot(x**2, (1, 10), thickness = 2.0, legend_label= '$n^2$', color = '#E5A3AD')
+p2 = plot(2**x, (1, 10), thickness = 2.0, legend_label= '$2^n$', color = '#6f1f2b')
+p1 + p2
+	</script></div>
+
+	<p>
+		Pretpostavimo da računalo može izvesti $10^6$ instrukcija po sekundi. Sljedeća tablica prikazuje okvirna vremena za rješavanja $f(n)$ instrukcija, za različite brojeve $n$.
+	</p>
+	<h2><a href = "https://en.wikipedia.org/wiki/Clique_problem">Problem KLIKA</a></h2>
+	<p>
+		<div class = "definicija"><strong> Definicija 15.</strong> Za podgraf $(G',R')$ grafa $(G,R)$ kažemo da je <strong>klika</strong> ako vrijedi da $R'\ =\ G'\times G'$.</div>
+		<div class = "definicija"><strong> Definicija 16. </strong> Za kliku kažemo da je <strong>K-klika</strong> ako sadrži točno $K$ članova. </div>
+		<div class = "definicija"><strong> Definicija 17. Problem KLIKA</strong> $:= \{(G,\ K)\ :\ graf\ G\ sadrži\ neku\ K-kliku \}$. </div>
+		<div class = "teorem"> <strong>Teorem. </strong>Problem KLIKA je NP - potpun. </div>
+	</p>
+	Na primjer, za formulu oblika 
+	$$(P_1 \vee \neg P_2) \wedge (\neg P_1 \vee \neg P_2) \wedge (P_1 \vee P_2)$$
+	vrijedi da je ispunjiva ako i samo ako sljedeći graf ima 3-kliku pri čemu je k broj el. disjunkcija. To postižemo tako da gradimo graf čiji su čvorovi literali u danoj knf, te su svi bridovi povezani osim prop. varijable i njene negacije te literala u istoj el. disjunkciji.
+
+	<div class="compute"><script type="text/x-sage">
+d = {'P_1(1)':['~P_2(2)','P_1(3)','P_2(3)'],'~P_2(1)':['~P_1(1)','~P_2(2)','P_1(3)'], '~P_1(2)':['P_2(3)'],'~P_2(2)':['P_1(3)']}
+G = Graph(d)
+show(G)
+print "Maksimalna klika je" + str(G.clique_maximum())
+	</script></div>	
+	<p>
+		U grafu smo sa $P_i(j)$, odnosno $~P_i(j)$ označili da j-ta disjunkcija sadrži literal $P_i$ tj. $\neg P_i$. Vidimo da graf sadrži čak dvije 3-klike $P_1^{(1)},P_2^{(2)},P_1^{(3)}$ i $P_2^{(1)},P_2^{(2)},P_1^{(3)}$. Tako da je očito interpretacija $I(P_1) = 1$, $I(P_2)=0$ interpretacija koja ispunjava danu knf.
+	</p>
+
+	<h2><a href= "https://en.wikipedia.org/wiki/Vertex_cover">Problem pokrivača bridova</a></h2>
+	<p>
+	<div class = "definicija"><strong> Definicija 18. </strong> Neka je $(G,E)$ neusmjeren graf. <strong>Pokrivač bridova</strong> grafa $G$ je $W \subseteq G$ za koji vrijedi: $\forall \{a,b\} \in E $ vrijedi $\{a,b\} \cap W \neq \emptyset$. </div>
+	<div class = "definicija"><strong> Definicija 19. </strong>Za pokrivač bridova kažemo da je <strong>K-pokrivač</strong> ako $W$ ima točno $K$ članova. </div>
+	<div class = "definicija"><strong> Definicija 20. Problem pokrivača</strong> $:=\ \{ (G,K)\ :\ graf\ G\ sadrži\ K-pokrivač\ bridova\ \} $. </div>
+	
+	<div class = "definicija"><strong> Definicija 21. </strong> Neka su $\Gamma_1$ i $\Gamma_2$ proizvoljni alfabeti. Kažemo da je jezik $L_1 \subset \Gamma_1^*$ <strong>polinomno reducibilan</strong> na jezik $L_2 \subset \Gamma_2^*$ ako postoji vremenski polinomno konstruktibilna funkcija $f : \Gamma_1^* \rightarrow \Gamma_1^*$ takva da $\forall w \in \Gamma_1^*$ vrijedi: $$\begin{align*} w \in L_1 \Leftrightarrow f(w) \in L_2. \end{align*}$$ </div>
+	<div class = "teorem"> <strong>Teorem. </strong>Problem SAT je polinomno reducibilan na problem 3-SAT. </div>
+	<div class = "teorem"><strong> Teorem. </strong>Problem POKRIVAČ BRIDOVA je polinomno reducibilan na problem SAT. </div>
+	<div class = "teorem"><strong> Teorem. </strong> Ako je jezik $L_1$ polinomno reducibilan na jezik $L_2$ i jezik $L_2$ polinom reducibilan na jezik $L_3$ tada je $L_1$ polinomno reducibilan na jezik $L_3$, tj. vrijedi svojstvo <i>tranzitivnosti</i>.</div>
+</div>.
+	<div class = "teorem"><strong> Teorem </strong> Problem POKRIVAČ BRIDOVA je NP - potpun. </div>
+	<div class = "dokaz"> Jednostavni video <strong><a href="https://www.youtube.com/watch?v=_dF0FrBLMzM"> dokaz </a></strong>.</div>
+	</p>
+	Pokazujemo da je problem K-pokrivač bridova polinomno reducibila na problem 3-SAT (što intuitivno možemo zaključiti iz prethodno navedenih teorema). <br \>
+	Neka je s $F$ dana formula $$F \equiv (P_1 \vee \neg P_1 \vee P_2) \wedge (P_1 \vee \neg P_1 \vee P_2)$$
+	gradimo graf tako da su čvorovi svi literali el. disjunkcija, te dodajmo tzv. vanjske čvorove za svaku prop. varijablu i negaciju.
+	<ol>
+		<li>Spojimo sve literale u istim el. disjunkcijama</li>
+		<li>Spojimo sve literale el. disjunkcija sa odgovarajućim literalima u vanjskim čvorovima </li>
+		<li>Spojimo sve prop. varijable i negacije u vanjskim čvorovima.</li>
+	</ol>
+	Slijedi da je dana formula ispunjiva ako i samo ako postoji k-pokrivač pri čemu je $k\ :=\ s\ +\ 2m$ gdje je $s$ broj propozicionalnih varijabli koje formula ima, a $m$ broj elementarnih disjunkcija. U našem slučaju je to graf:
+	<div class="compute"><script type="text/x-sage">
+d = {'P_1':['~P_1'],'P_2':['~P_2'],'P_1(1)':['~P_1(2)','P_2(1)','P_1'],'~P_1(1)':['P_2(1)', 'P_1'],'P_2(1)':['P_2'],'P_1(2)':['~P_1(2)','P_2(2)','P_1'],'~P_1(2)':['P_2(2)','~P_1'],'P_2(2)':['P_2']}
+G = Graph(d)
+show(G)
+print "Pokrivač je: " + str(G.independent_set())
+	</script></div>
+
+	<h2>Problem obojivosti grafa</h2>
+	<p>
+	<div class = "definicija"><strong> Definicija 22. </strong>	Za neusmjeren graf $(G,E)$ kažemo da je <strong>K-obojiv</strong> ako postoji particija skupa $G\ =\ \{B_1,...B_k\}$ takva da ne postoji niti jedan $j \in \{1, ..., k\}$ takav da $a,b \in B_j$. </div>
+	</p>
+	<div class = "teorem"> <strong> Teorem. </strong>Problem obojivosti grafa je polinomno reducibilan na problem 3-SAT.
+	</div>
+	Neka je $$F \equiv (P_1 \vee \neg P_1 \vee P_2) \wedge (P_1 \vee \neg P_1 \vee P_2)$$ proizvoljna 3-KNF. 
+	Skup vrhova sastoji se od:
+	<ol>
+		<li>Propozicionalnih varijabli i njihovih negacija.</li>
+		<li>Čvora u i v.</li>
+		<li>Spajanje pentagona za svaku elelemntarnu disjunkciju.</li>
+	</ol>
+	Vrhove spajamo na sljedeći način: 
+	<ol>
+		<li>Između svih propizionalnih varijabli i njihovih negacija.</li>
+		<li>Između u i svih propozicionalnih varijabli i negacija.</li>
+		<li>Između literala elementarne disjunkcije i proizvoljnih elemenata pridruženog pentagona.</li>
+		<li>Između čvora v i čvorova pentagona koje nismo pridružili niti jednom literalu u prethodnom koraku.</li>
+		<li>Između u i v.</li>
+	</ol>
+	Slijedi da je dana formula ispunjiva ako i samo ako je tako definiran graf 3-obojiv. U našem slučaju je to graf:
+	<div class="compute"><script type="text/x-sage">
+d = {'a':['b'],'b':['c'],'c':['d'],'d':['e'],'e':['a'],'p':['q'],'q':['r'],'r':['a'],'s':['t'],'t':['e'],'P_1':['~P_1','a','r'],'~P_1':['b','r'],'P_2':['~P_2','a','q'],'~P_2':[],'u':['P_1','~P_1','P_2','~P_2','v'],'v':['d','e','s','t']}
+G = Graph(d)
+partition = G.coloring()
+
+H = {}
+
+for color in partition:
+    if 'u' in color:
+        H['#E5A3AD'] = color
+    if 'v' in color:
+        H['#6f1f2b'] = color
+G.plot(vertex_colors=H)
+	</script></div>
+</div>
+
+  </body>
+</html>
