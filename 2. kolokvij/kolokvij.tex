@@ -1,0 +1,30 @@
+\documentclass{article}
+
+% set font encoding for PDFLaTeX or XeLaTeX
+\usepackage{ifxetex}
+\ifxetex
+  \usepackage{fontspec}
+\else
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{lmodern}
+\fi
+\usepackage{mathtools}
+\usepackage{commath}
+\usepackage{amsmath}
+\usepackage{ntheorem}
+
+%zadatak2 
+\newtheorem*{theorem-non}{Teorem}
+\begin{document}
+
+%zadatak1
+\begin{equation}\tag*{*}
+\norm{ \frac{f}{g} } = \lim_{x \to \infty}  \abs{\frac{f(x)}{g(x)}}
+\end{equation}
+
+%zadatak2 Provjera
+\begin{theorem-non}
+Ovo je teorem bez broja.
+\end{theorem-non}
+\end{document}
